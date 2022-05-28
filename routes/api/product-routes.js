@@ -69,6 +69,7 @@ router.post('/', (req, res) => {
   */
   Product.create(req.body)
     .then((product) => {
+      // console.log(product, 'products of the body')
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
       if (req.body.tagIds.length) {
         const productTagIdArr = req.body.tagIds.map((tag_id) => {
@@ -99,7 +100,7 @@ router.put('/:id', (req, res) => {
   })
     .then((product) => {
       // find all associated tags from ProductTag
-      return ProductTag.findAll({ where: { product_id: req.params.id } });
+      return product.findAll({ where: { product_id: req.params.id } });
     })
     .then((productTags) => {
       // get list of current tag_ids
@@ -134,7 +135,9 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
   Product.destroy({
-    where: req.params.id
+    where: {
+      id: req.params.id
+    }
   })
   .then(dbProductsData => {
     if (!dbProductsData) {
